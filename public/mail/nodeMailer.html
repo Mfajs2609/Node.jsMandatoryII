@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+</head>
+
+<body>
+    <form action="/logout" method="POST" name="logout">
+        <input type="submit" value="Logout" id="logout">
+    </form>
+    <h1>NodeMailer</h1>
+    <p>Send email to yourself</p>
+    <div>
+        <form action="/nodeMailer" method="POST">
+            <label for ="email">Email:</label><br>
+            <input type="text" id="email" name="email" required>
+            <br>
+            <label for ="subject">Emne:</label><br>
+            <input type="text" id="subject" name="subject" required>
+            <br>
+            <label for ="message">Besked:</label><br>
+            <textarea type="text" id="message" name="message" required></textarea>
+            <br>
+            <input type="submit" name="sendMail" value="Send">
+        </form>
+        <br>
+        <form action="/home" method="GET">
+            <input type="submit" name="home" value="home">
+        </form>
+    </div>
+</body>
+</html>
