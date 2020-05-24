@@ -3,14 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
+    <title>Home</title>
 </head>
 <body>
     <form action="/logout" method="POST" name="logout">
-        <input type="submit" value="Logout" id="logout">
+        <input type="submit" id="logout" value="logout">
     </form>
+
     <p>Signed in as: </p>
-    <p id="username"> </p>
+    <dl>
+        <dt>Username:</dt>
+        <dd><p id="username"> </p></dd>
+        <dt>Email:</dt>
+        <dd><p id="email"> </p></dd>
+    </dl>
+
     <br>
     <div>
         <h1>Welcome to the Homepage</h1>
@@ -20,13 +27,15 @@
             <input type="submit" value="Secret" id="secret">
         </form>
         <br>
-        <p>nodemailer</p>
+        <p>Nodemailer</p>
         <form action="/nodemailer" method="GET" name="mail">
             <input type="submit" value="SendMail" id="mail">
         </form>
     </div>
+    <br>
+    <a href="/electives">My Electives</href>
         
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="./home.js"></script>
 </body>
 </html>

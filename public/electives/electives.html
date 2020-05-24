@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electives</title>
+
+</head>
+<body>
+    <form action="/home" method="GET" name="home">
+        <input type="submit" value="Back" id="home">
+    </form>
+    
+   <h1>My Electives</h1>
+   <p>This page shows the electives of the user</p>
+   <p>To show the electives-data i used JSON.stringify() which converts a JavaScript object to a string</p>
+    <dl>
+        <dt>Electives:</dt>
+        <dd><p id="userElectives"> </p></dd>
+    </dl>
+</body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="./electives.js"></script>
+</html>

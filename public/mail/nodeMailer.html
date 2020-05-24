@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
+    <title>SendMail</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
 </head>
 
@@ -13,6 +13,8 @@
     </form>
     <h1>NodeMailer</h1>
     <p>Send email to yourself</p>
+    <p>After clicking send, the page should refresh and "Message sent" should be printet in the terminal.</p>
+    
     <div>
         <form action="/nodeMailer" method="POST">
             <label for ="email">Email:</label><br>
@@ -28,7 +30,7 @@
         </form>
         <br>
         <form action="/home" method="GET">
-            <input type="submit" name="home" value="home">
+            <input type="submit" name="back" value="back">
         </form>
     </div>
 </body>

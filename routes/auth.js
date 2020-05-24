@@ -8,26 +8,27 @@ const fs = require("fs");
 //bcrypt.hash("password", saltRounds).then(hash => console.log(hash)); 
 
 //bcrypt.compare("password", "$2b$12$w3cdXXhMKayK7Awj4DfWeugprn5CcA3Xi/SCAYhasznJ4MPdri/5q")
-//    .then(result => console.log(result)); 
+//    .then(result => console.log(result));
 
+
+//GET methods for login
 router.get('/login', (req, res) => {
     const loginPage = fs.readFileSync("./public/login/login.html", "utf8");
     return res.send(loginPage);
-
 });
 
 router.get('/', (req, res) => {
     const loginPage = fs.readFileSync("./public/login/login.html", "utf8");
     return res.send(loginPage);
-
 });
 
+//GET method for create user
 router.get('/createuser', (req, res) => {
     const createPage = fs.readFileSync("./public/createuser/createuser.html", "utf8");
     return res.send(createPage);
-
 });
 
+//GET method for home, login is required.
 router.get('/home', (req, res) => {
     if(req.session.login) {
         const homePage = fs.readFileSync("./public/home/home.html", "utf8");
@@ -37,15 +38,7 @@ router.get('/home', (req, res) => {
     }
 });
 
-router.get('/getUsername', (req, res) => {
-    return res.send({ response: req.session })
-});
-
-router.get('/getUseremail', (req, res) => {
-    console.log(req.session)
-    return res.send({ response: req.session })
-});
-
+//GET method for secret, login is required.
 router.get('/secret', (req, res) => {
     if(req.session.login) {
         const secretPage = fs.readFileSync("./public/secret/secret.html", "utf8");
@@ -55,10 +48,54 @@ router.get('/secret', (req, res) => {
     }
 });
 
+//POST method for home. 
+router.post('/home', async (req, res) => {
 
+    //variable for the form data.
+    const { username, password } = req.body;
+    try {
+        //Selecting username, email and password Where username in the database matches username from the form.
+        const infoCheck = await User.query().select('username', 'email', 'password').where('username', username);
 
+        //Checking if the query found any matches, if not redirect login. 
+        if (infoCheck.length !== 1) {
+            return res.redirect("/login");
+        }
+
+        //If match, Check that password from the form matches the password from the database.
+        if (infoCheck.length === 1){
+            //if true.
+            if (password === infoCheck[0].password){
+                //using the middleware express-session, this will give the user access to the other pages.
+                req.session.login = true;
+                req.session.username = username;
+                req.session.email = infoCheck[0].email;
+                return res.redirect("/home");
+            } else {
+                //if false, redirect to login.
+                return res.redirect("/login")
+            }
+        }
+
+    } catch(error){
+        return res.status(500).send({ response: "Something went wrong with the DB" });
+    }
+});
+
+//POST method for logout
+router.post('/logout', (req, res) => {
+    //Again using the middleware express-session.
+    //This will make sure that when the user logout, they have to login again before accessing the unauthorized pages.
+    req.session.login = undefined;
+    req.session.username = undefined;
+    req.session.email = undefined;
+    return res.redirect("/login");
+});
 
 /*
+First attempt at creating a login where i compared the password from the form data with the password stored in the database.
+it didn't work so I started over again with password in plain text.
+
 router.post('/login', (req, res) => {                                                                               
     const { username, password } = req.body;
     if (username && password) {
@@ -71,12 +108,11 @@ router.post('/login', (req, res) => {
                 try{
                     console.log(userFound.length)
                     
-                    bcrypt.compare(password, userFound.hashedPassword)
+                    bcrypt.compare(password, userFound.password)
                     .then(result => console.log(result));
                     
                     bcrypt.compare(password, userFound.password).then(function(result) {
                        
-                        console.log(`${userFound.password}`)
                         if (result === true) {
                             return res.send({response: "Success"})
                         } else {
@@ -94,76 +130,5 @@ router.post('/login', (req, res) => {
     }
 });
 */
-
-router.post('/home', async (req, res) => {
-    const { username, email, password } = req.body;
-    try {
-        const infoCheck = await User.query().select('username', 'email', 'password').where('username', username);
-
-        if (infoCheck.length !== 1) {
-            return res.redirect("/login");
-        }
-
-        if (infoCheck.length === 1){
-            if (password === infoCheck[0].password){
-                req.session.login = true;
-                req.session.username = username;
-                return res.redirect("/home");
-            } else {
-                return res.redirect("/login")
-            }
-        }
-
-    } catch(error){
-        return res.send(error);
-    }
-})
-
-
-
-
-router.post('/signup', (req, res) => {
-    const { username, email, password } = req.body;
-
-    // username and password validation
-    if (username && password && email) {
-        if (password.length < 8) {
-            return res.status(400).send({ response: "Password must be 8 characters or longer" });
-        } else {
-            try {
-                User.query().select('username').where('username', username).then(foundUser => {
-                    if (foundUser.length > 0) {
-                        return res.status(400).send({ response: "User already exists" });
-                    } else {
-
-                            User.query().insert({
-                                username,
-                                email,
-                                password
-                            }).then(createdUser => {
-                                console.log("success");
-                                //return res.send({ response: `The user ${createdUser.username} was created` });
-                                return res.redirect("/login");
-                            });
-                    }
-                });
-            } catch (error) {
-                return res.status(500).send({ response: "Something went wrong with the DB" });
-            }
-        }
-    } else {
-        return res.status(400).send({ response: "username or password missing" });
-    }
-});
-
-
-
-router.post('/logout', (req, res) => {
-    req.session.login = undefined;
-    req.session.username = undefined;
-    req.session.email = undefined;
-    return res.redirect("/login");
-});
-
 
 module.exports = router;
